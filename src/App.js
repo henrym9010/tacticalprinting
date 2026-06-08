@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 
 // ═══════════════════════════════════════════════════
 // TACTICAL PRINTING — 3D Printed Firearm Accessories
