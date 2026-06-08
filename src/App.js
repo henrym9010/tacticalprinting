@@ -523,6 +523,11 @@ export default function TacticalPrinting() {
   const activeProducts = dbProducts.length > 0 ? dbProducts.map(p => ({
     ...p,
     cat: p.category,
+    desc: p.description || '',
+    reviews: p.review_count || 0,
+    sold: p.sold_count || 0,
+    features: p.features || [],
+    variants: p.variants || [],
     images: ['img_1', 'img_2', 'img_3'],
   })) : PRODUCTS;
 
