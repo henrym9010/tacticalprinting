@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { supabase } from './supabase';
 
 // ═══════════════════════════════════════════════════
-// TACTICAL PRINTING — 3D Printed Firearm Accessories
+// TACTICAL PRINTER — 3D Printed Firearm Accessories
 // ═══════════════════════════════════════════════════
 
 const C = {
@@ -546,7 +546,7 @@ export default function TacticalPrinting() {
               <div style={{ width: 36, height: 36, borderRadius: 4, background: C.accent, display: "flex", alignItems: "center", justifyContent: "center" }}>
                 <span style={{ fontFamily: FONT.display, fontSize: 20, fontWeight: 700, color: C.bg }}>TP</span>
               </div>
-              <span style={{ fontFamily: FONT.display, fontSize: 18, fontWeight: 700, color: C.white, letterSpacing: 2 }}>TACTICAL PRINTING</span>
+              <span style={{ fontFamily: FONT.display, fontSize: 18, fontWeight: 700, color: C.white, letterSpacing: 2 }}>TACTICAL PRINTER</span>
             </button>
           </div>
 
@@ -651,17 +651,19 @@ export default function TacticalPrinting() {
                 <h2 style={{ fontFamily: FONT.display, fontSize: 14, color: C.accent, letterSpacing: 3, marginBottom: 16 }}>SHOP BY CATEGORY</h2>
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))", gap: 10 }}>
                   {CATEGORIES.map(cat => {
-                    const count = PRODUCTS.filter(p => p.cat === cat.id).length;
+                    const count = activeProducts.filter(p => p.cat === cat.id).length;
                     return (
                       <button key={cat.id} onClick={() => openCategory(cat.id)} style={{
                         padding: "20px 16px", borderRadius: 4, background: C.card, border: `1px solid ${C.border}`,
-                        cursor: "pointer", textAlign: "left", transition: "all 0.15s",
+                        cursor: "pointer", textAlign: "left", transition: "all 0.15s", position: "relative", overflow: "hidden",
                       }}
                         onMouseEnter={e => { e.currentTarget.style.borderColor = C.accent + "44"; e.currentTarget.style.background = C.cardHover; }}
                         onMouseLeave={e => { e.currentTarget.style.borderColor = C.border; e.currentTarget.style.background = C.card; }}
                       >
                         <div style={{ fontFamily: FONT.display, fontSize: 14, color: C.white, letterSpacing: 1, marginBottom: 4 }}>{cat.name.toUpperCase()}</div>
-                        <div style={{ fontFamily: FONT.body, color: C.textDim, fontSize: 12 }}>{count} products</div>
+                        <div style={{ fontFamily: FONT.body, color: count > 0 ? C.textDim : C.accent, fontSize: 12 }}>
+                          {count > 0 ? `${count} product${count > 1 ? 's' : ''}` : "Coming Soon"}
+                        </div>
                       </button>
                     );
                   })}
@@ -697,6 +699,16 @@ export default function TacticalPrinting() {
                 ))}
               </div>
             </div>
+            
+            {filteredProducts.length === 0 && (
+              <div style={{ textAlign: "center", padding: "60px 20px", background: C.card, borderRadius: 6, border: `1px solid ${C.border}` }}>
+                <Ic n="pkg" s={48} c={C.textDim} />
+                <h3 style={{ fontFamily: FONT.display, fontSize: 20, color: C.white, letterSpacing: 1, marginTop: 16 }}>COMING SOON</h3>
+                <p style={{ fontFamily: FONT.body, color: C.textMuted, fontSize: 14, maxWidth: 400, margin: "8px auto 0", lineHeight: 1.5 }}>
+                  We're working on new products for this category. Sign up for our email list to be notified when they drop.
+                </p>
+              </div>
+            )}
 
             {/* Value Props (home only) */}
             {page === "home" && (
@@ -727,7 +739,7 @@ export default function TacticalPrinting() {
               <div style={{ width: 28, height: 28, borderRadius: 3, background: C.accent, display: "flex", alignItems: "center", justifyContent: "center" }}>
                 <span style={{ fontFamily: FONT.display, fontSize: 14, fontWeight: 700, color: C.bg }}>TP</span>
               </div>
-              <span style={{ fontFamily: FONT.display, fontSize: 14, color: C.white, letterSpacing: 2 }}>TACTICAL PRINTING</span>
+              <span style={{ fontFamily: FONT.display, fontSize: 14, color: C.white, letterSpacing: 2 }}>TACTICAL PRINTER</span>
             </div>
             <p style={{ fontFamily: FONT.body, color: C.textDim, fontSize: 12, maxWidth: 300, lineHeight: 1.5 }}>
               3D printed firearm accessories. Designed and printed in the USA. PETG-CF material. Lifetime warranty on all products.
@@ -756,7 +768,7 @@ export default function TacticalPrinting() {
           </div>
         </div>
         <div style={{ maxWidth: 1200, margin: "20px auto 0", paddingTop: 20, borderTop: `1px solid ${C.border}`, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <span style={{ fontFamily: FONT.body, color: C.textDim, fontSize: 11 }}>{String.fromCharCode(169)} 2026 Tactical Printing. All rights reserved. tacticalprinting.com</span>
+          <span style={{ fontFamily: FONT.body, color: C.textDim, fontSize: 11 }}>{String.fromCharCode(169)} 2026 Tactical Printer. All rights reserved. tacticalprinting.com</span>
           <div style={{ display: "flex", gap: 12 }}>
             {["Visa", "Mastercard", "Amex", "PayPal", "Apple Pay"].map(p => (
               <span key={p} style={{ fontFamily: FONT.body, color: C.textDim, fontSize: 10, padding: "3px 8px", border: `1px solid ${C.border}`, borderRadius: 3 }}>{p}</span>
