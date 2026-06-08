@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { supabase } from './supabase';
 
 // ═══════════════════════════════════════════════════
 // TACTICAL PRINTING — 3D Printed Firearm Accessories
@@ -470,6 +471,9 @@ export default function TacticalPrinting() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQ, setSearchQ] = useState("");
   const [loaded, setLoaded] = useState(false);
+  const [dbProducts, setDbProducts] = useState([]);
+  const [dbColors, setDbColors] = useState([]);
+  const [dbLoading, setDbLoading] = useState(true);
 
   useEffect(() => {
     const link = document.createElement("link");
@@ -477,6 +481,27 @@ export default function TacticalPrinting() {
     link.rel = "stylesheet";
     document.head.appendChild(link);
     setTimeout(() => setLoaded(true), 100);
+  }, []);
+
+  useEffect(() => {
+    async function loadData() {
+      // Load products
+      const { data: products } = await supabase
+        .from('products')
+        .select('*')
+        .order('sort_order');
+
+      // Load colors
+      const { data: colors } = await supabase
+        .from('product_colors')
+        .select('*')
+        .order('sort_order');
+
+      if (products) setDbProducts(products);
+      if (colors) setDbColors(colors.map(c => ({ id: c.slug, name: c.name, hex: c.hex_code })));
+      setDbLoading(false);
+    }
+    loadData();
   }, []);
 
   const addToCart = (item) => {
@@ -495,8 +520,14 @@ export default function TacticalPrinting() {
   const openCategory = (cat) => { setSelCat(cat); setPage("category"); window.scrollTo(0, 0); };
   const goHome = () => { setPage("home"); setSelProduct(null); setSelCat(null); window.scrollTo(0, 0); };
 
-  const filteredProducts = selCat ? PRODUCTS.filter(p => p.cat === selCat) : PRODUCTS;
-  const searchResults = searchQ.length > 1 ? PRODUCTS.filter(p => `${p.name} ${p.desc} ${p.cat}`.toLowerCase().includes(searchQ.toLowerCase())) : [];
+  const activeProducts = dbProducts.length > 0 ? dbProducts.map(p => ({
+    ...p,
+    cat: p.category,
+    images: ['img_1', 'img_2', 'img_3'],
+  })) : PRODUCTS;
+
+  const filteredProducts = selCat ? activeProducts.filter(p => p.cat === selCat) : activeProducts;
+  const searchResults = searchQ.length > 1 ? activeProducts.filter(p => `${p.name} ${p.desc} ${p.cat}`.toLowerCase().includes(searchQ.toLowerCase())) : [];
 
   const cartCount = cart.reduce((s, i) => s + i.qty, 0);
 
